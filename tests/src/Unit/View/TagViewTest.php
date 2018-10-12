@@ -70,7 +70,7 @@ class TagViewTest extends UnitTestCase {
   public function testGetAdUnit($tag_ad_unit, $default_ad_unit, $network_id, $expected_adunit) {
     $tag = $this->prophesize(TagInterface::class);
     $tag->adunit()->willReturn($tag_ad_unit);
-    $config_factory = $this->getConfigFactoryStub(['dfp.settings' => ['default_pattern' => $default_ad_unit, 'network_id' => $network_id]]);
+    $config_factory = $this->getConfigFactoryStub(['dfp.settings' => ['adunit_pattern' => $default_ad_unit, 'network_id' => $network_id]]);
     $token = $this->getMock(TokenInterface::class);
     $token->method('replace')->willReturnArgument(0);
     $module_handler = $this->prophesize(ModuleHandlerInterface::class)->reveal();
@@ -97,7 +97,7 @@ class TagViewTest extends UnitTestCase {
     $tag->adunit()->willReturn($tag_ad_unit);
     $tag->size()->willReturn($tag_sizes);
     $tag->targeting()->willReturn($tag_targeting);
-    $config_factory = $this->getConfigFactoryStub(['dfp.settings' => ['default_pattern' => 'default_adunit', 'network_id' => $network_id]]);
+    $config_factory = $this->getConfigFactoryStub(['dfp.settings' => ['adunit_pattern' => 'default_adunit', 'network_id' => $network_id]]);
     $token = $this->getMock(TokenInterface::class);
     $token->method('replace')->willReturnArgument(0);
     $module_handler = $this->prophesize(ModuleHandlerInterface::class)->reveal();

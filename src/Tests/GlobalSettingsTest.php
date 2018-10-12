@@ -38,6 +38,7 @@ class GlobalSettingsTest extends DfpTestBase {
    */
   public function testGlobalSettings() {
     $edit = [
+      'adunit_pattern' => 'example.com',
       'network_id' => '123456789',
       'async_rendering' => TRUE,
       'single_request' => TRUE,
@@ -51,13 +52,16 @@ class GlobalSettingsTest extends DfpTestBase {
     $this->assertNoRaw('googletag', 'With no DFP tags set up there is no additional JS added');
 
     // Create a tag.
-    $this->dfpCreateTag();
+    $tag = $this->dfpCreateTag();
+    $tag->set('adunit', '');
+    $tag->save();
 
     $this->drupalGet('<front>');
     $this->assertRaw('googletag.pubads().enableAsyncRendering();', 'Asynchronous rendering is turned on.');
     $this->assertRaw('googletag.pubads().enableSingleRequest();', 'Single request is turned on.');
     $this->assertRaw('googletag.pubads().collapseEmptyDivs();', 'Collapse empty divs is turned on.');
     $this->assertRaw("googletag.pubads().setTargeting('&lt;em&gt;test target&lt;/em&gt;', ['&lt;em&gt;test value&lt;/em&gt;','test value 2']);", 'Global targeting values appear correclty in javascript.');
+    $this->assertRaw('/123456789/example.com');
 
     $edit = [
       'network_id' => '123456789',

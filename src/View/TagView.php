@@ -140,7 +140,7 @@ class TagView {
     if (is_null($this->adUnit)) {
       $adunit = $this->tag->adunit();
       if (empty($adunit)) {
-        $adunit = $this->globalSettings->get('default_pattern');
+        $adunit = $this->globalSettings->get('adunit_pattern');
       }
       $this->adUnit = '/' . $this->globalSettings->get('network_id') . '/' . $this->token->replace($adunit, $this, ['clear' => TRUE]);
     }
