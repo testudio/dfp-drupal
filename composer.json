@@ -1,5 +1,5 @@
 {
-    "name": "drupal/dfp",
+    "name": "testudio/dfp",
     "description": "Integrates DFP Google Publisher Tags onto a site.",
     "type": "drupal-module",
     "homepage": "https://drupal.org/project/dfp",
