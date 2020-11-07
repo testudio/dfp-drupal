@@ -151,7 +151,7 @@ class TagView {
    * Gets the raw size from the DFP tag.
    *
    * @return string
-   *   The ad size or sizes. Example: 300x600,300x250.
+   *   The ad size or sizes. Example: 300x600,300x250,fluid.
    */
   public function getRawSize() {
     return $this->tag->size();
@@ -318,28 +318,36 @@ class TagView {
    *
    * @param string $size
    *   A size to format. Multiple sizes delimited by comma. Example:
-   *   '300x600,300x250'.
+   *   '300x600,300x250,fluid'.
    *
    * @return string
    *   A string representing sizes that can be used in javascript. Example:
-   *   '[[300,600],[300,250]]'.
+   *   "[[300,600],[300,250],'fluid']".
    */
   public static function formatSize($size) {
     $formatted_sizes = [];
 
     $sizes = explode(',', $size);
+
     foreach ($sizes as $size) {
       if ($size == '<none>') {
         // If the ad sizes string contains the special keyword "<none>," use an
         // empty size list in order to suppress slot display.
         $formatted_sizes[] = '[]';
       }
+      elseif (trim($size) == 'fluid') {
+        // If the ad sizes string contains the special keyword "fluid," use the
+        // Google NamedSize ['fluid'].  See DFP documentation at this link
+        // https://developers.google.com/doubleclick-gpt/reference?rd=1#type-definitions
+
+        // Note that both 'fluid' and ['fluid'] are acceptable forms to declare a slot size as fluid.
+        $formatted_sizes[] = "'" . trim($size) . "'";
+      }
       else {
         $formatted_size = explode('x', trim($size));
         $formatted_sizes[] = '[' . implode(', ', $formatted_size) . ']';
       }
     }
-
     return count($formatted_sizes) == 1 ? $formatted_sizes[0] : '[' . implode(', ', $formatted_sizes) . ']';
   }
 

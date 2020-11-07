@@ -21,7 +21,7 @@
       .build();
   {% endif %}
 
-  googletag.slots["{{ tag.id }}"] = googletag.defineSlot("{{ tag.adUnit }}", {{ tag.size }}, "{{ tag.placeholderId }}")
+  googletag.slots["{{ tag.id }}"] = googletag.defineSlot("{{ tag.adUnit }}", {{ tag.size|raw }}, "{{ tag.placeholderId }}")
 
   {% if tag.clickUrl %}
     .setClickUrl("{{ tag.clickUrl }}")
