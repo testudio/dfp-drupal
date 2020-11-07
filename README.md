@@ -265,3 +265,33 @@ To enable the Exportable Scheduler Module:
 1.  Check the Exportable Scheduler Modle box. 
 1.  Click the Save configuration button. **_ 
 
+Installing D9 version.
+---------------
+
+In `composer.json` change
+
+```
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://packages.drupal.org/8"
+    }
+  ],
+```
+
+to 
+
+```
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://packages.drupal.org/8"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/testudio/dfp-drupal.git"
+    }
+  ],
+```
+
+and run `composer update drupal/dfp:^1.0`
