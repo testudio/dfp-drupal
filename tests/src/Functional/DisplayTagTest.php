@@ -1,13 +1,6 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\dfp\Tests\DisplayTagTest.
- */
-
-namespace Drupal\dfp\Tests;
-
-use Drupal\Component\Utility\Unicode;
+namespace Drupal\Tests\dfp\Functional;
 
 /**
  * Tests display of DFP ad tag.
@@ -15,6 +8,15 @@ use Drupal\Component\Utility\Unicode;
  * @group dfp
  */
 class DisplayTagTest extends DfpTestBase {
+
+  /**
+   * Default theme, needed in Drupal 9.0.0
+   *
+   * @var string
+   *
+   * @see https://www.drupal.org/node/3083055
+   */
+  protected $defaultTheme = 'stark';
 
   /**
    * Tests display a DFP tag in a block.
@@ -27,7 +29,7 @@ class DisplayTagTest extends DfpTestBase {
     $this->assertRaw('googletag.defineSlot("' . $tag_view->getAdUnit() . '", ' . $tag_view->getSize() . ', "' . $tag_view->getPlaceholderId() . '")');
 
     // Create a tag with an ID longer than 32 characters.
-    $edit = ['id' => Unicode::strtolower($this->randomMachineName(64))];
+    $edit = ['id' => mb_strtolower($this->randomMachineName(64))];
     $tag = $this->dfpCreateTag($edit);
     $tag_view = $this->dfpTagToTagView($tag);
     $this->drupalGet('<front>');
@@ -203,12 +205,14 @@ class DisplayTagTest extends DfpTestBase {
     $edit['adsense_backfill[ad_types]'] = 'text_image';
     $edit['adsense_backfill[channel_ids]'] = $this->randomMachineName();
     foreach ($colors as $color) {
-      $edit['adsense_backfill[color][' . $color . ']'] = Unicode::strtoupper($this->randomMachineName(6));
+      $edit['adsense_backfill[color][' . $color . ']'] = mb_strtoupper($this->randomMachineName(6));
     }
     $this->dfpCreateTag($edit);
     $this->drupalGet('<front>');
-    $this->assertPropertySet('', 'adsense_ad_types', $edit['adsense_backfill[ad_types]']);
-    $this->assertPropertySet('', 'adsense_channel_ids', $edit['adsense_backfill[channel_ids]']);
+    $this->assertPropertySet('', 'adsense_ad_types',
+      $edit['adsense_backfill[ad_types]']);
+    $this->assertPropertySet('', 'adsense_channel_ids',
+      $edit['adsense_backfill[channel_ids]']);
     foreach ($colors as $color) {
       $this->assertPropertySet('', 'adsense_' . $color . '_color', '#' . $edit['adsense_backfill[color][' . $color . ']']);
     }

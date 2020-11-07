@@ -32,7 +32,7 @@ function dfp_adtest_page() {
     $tag_devel = [];
     if (module_exists('devel')) {
       $tag_devel['object'] = [
-        '#markup' => kpr($tag, TRUE),
+        '#markup' =>  \Drupal::service('devel.dumper')->dumpOrExport($tag, TRUE),
       ];
     }
     $output[] = [$tag_slot, $tag_tag, $tag_devel];

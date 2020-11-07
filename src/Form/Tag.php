@@ -209,10 +209,10 @@ class Tag extends EntityForm {
     $t_args['%slot'] = $tag->label();
 
     if ($status == SAVED_UPDATED) {
-      drupal_set_message(t('The DFP tag %slot has been updated.', $t_args));
+      $this->messenger()->addMessage(t('The DFP tag %slot has been updated.', $t_args));
     }
     elseif ($status == SAVED_NEW) {
-      drupal_set_message(t('The DFP tag %slot has been added.', $t_args));
+      $this->messenger()->addMessage(t('The DFP tag %slot has been added.', $t_args));
       $context = array_merge($t_args, ['link' => $tag->toLink($this->t('Edit DFP tag'), 'edit-form')->toString()]);
       $this->logger('dfp')->notice('Added DFP tag %slot.', $context);
     }

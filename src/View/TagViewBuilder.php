@@ -9,13 +9,14 @@ namespace Drupal\dfp\View;
 
 use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Entity\EntityDisplayRepositoryInterface;
+use Drupal\Core\Entity\EntityRepositoryInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Entity\EntityViewBuilder;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
-use Drupal\Core\Render\RendererInterface;
+use Drupal\Core\Theme\Registry;
 use Drupal\dfp\Entity\TagInterface;
 use Drupal\dfp\TokenInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -49,23 +50,36 @@ class TagViewBuilder extends EntityViewBuilder {
   /**
    * Constructs a new BlockViewBuilder.
    *
-   * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
+   * @param \Drupal\Core\Entity\EntityTypeInterface $entityType
    *   The entity type definition.
-   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
+   * @param EntityRepositoryInterface $entityRepository
    *   The entity manager service.
-   * @param \Drupal\Core\Language\LanguageManagerInterface $language_manager
+   * @param \Drupal\Core\Language\LanguageManagerInterface $languageManager
    *   The language manager.
-   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+   * @param \Drupal\Core\Theme\Registry $registry
+   *   The theme registry service.
+   * @param \Drupal\Core\Entity\EntityDisplayRepositoryInterface $entityDisplayRepository
+   *   The entity display repository service.
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler
    *   The module handler.
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
    *   The config factory.
    * @param \Drupal\dfp\TokenInterface $token
    *   DFP token service.
    */
-  public function __construct(EntityTypeInterface $entity_type, EntityManagerInterface $entity_manager, LanguageManagerInterface $language_manager, ModuleHandlerInterface $module_handler, ConfigFactoryInterface $config_factory, TokenInterface $token) {
-    parent::__construct($entity_type, $entity_manager, $language_manager);
-    $this->moduleHandler = $module_handler;
-    $this->configFactory = $config_factory;
+  public function __construct(
+    EntityTypeInterface $entityType,
+    EntityRepositoryInterface $entityRepository,
+    LanguageManagerInterface $languageManager,
+    Registry $registry,
+    EntityDisplayRepositoryInterface $entityDisplayRepository,
+    ModuleHandlerInterface $moduleHandler,
+    ConfigFactoryInterface $configFactory,
+    TokenInterface $token
+  ) {
+    parent::__construct($entityType, $entityRepository, $languageManager, $registry, $entityDisplayRepository);
+    $this->moduleHandler = $moduleHandler;
+    $this->configFactory = $configFactory;
     $this->token = $token;
   }
 
@@ -75,8 +89,10 @@ class TagViewBuilder extends EntityViewBuilder {
   public static function createInstance(ContainerInterface $container, EntityTypeInterface $entity_type) {
     return new static(
       $entity_type,
-      $container->get('entity.manager'),
+      $container->get('entity.repository'),
       $container->get('language_manager'),
+      $container->get('theme.registry'),
+      $container->get('entity_display.repository'),
       $container->get('module_handler'),
       $container->get('config.factory'),
       $container->get('dfp.token')

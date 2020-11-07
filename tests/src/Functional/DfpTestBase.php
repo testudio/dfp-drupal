@@ -2,21 +2,20 @@
 
 /**
  * @file
- * Contains \Drupal\dfp\Tests\DfpTestBase.
+ * Contains \Drupal\Tests\dfp\Functional\DfpTestBase.
  */
 
-namespace Drupal\dfp\Tests;
+namespace Drupal\Tests\dfp\Functional;
 
-use Drupal\Component\Utility\Unicode;
 use Drupal\Dfp\Entity\Tag;
 use Drupal\dfp\Entity\TagInterface;
 use Drupal\dfp\View\TagView;
-use Drupal\simpletest\WebTestBase;
+use Drupal\Tests\BrowserTestBase;
 
 /**
  * An abstract class to build DFP tests from.
  */
-abstract class DfpTestBase extends WebTestBase {
+abstract class DfpTestBase extends BrowserTestBase {
 
   /**
    * An admin user.
@@ -117,10 +116,10 @@ abstract class DfpTestBase extends WebTestBase {
    *   A simple $edit array to be used on the DFP tag form.
    */
   protected function dfpBasicTagEditValues() {
-    $machinename = $this->randomMachineName(16);
-    $basic_tag = [
-      'id' => Unicode::strtolower($machinename),
-      'slot' => $machinename,
+    $machineName = $this->randomMachineName(16);
+    $basicTag = [
+      'id' => mb_strtolower($machineName),
+      'slot' => $machineName,
       'size' => implode(',', $this->dfpGenerateSize(2)),
       'adunit' => $this->randomMachineName(),
       'block' => 1,
@@ -138,7 +137,7 @@ abstract class DfpTestBase extends WebTestBase {
       'breakpoints[0][ad_sizes]' => implode(',', $this->dfpGenerateSize(2)),
     ];
 
-    return $basic_tag;
+    return $basicTag;
   }
 
   /**
@@ -197,13 +196,11 @@ abstract class DfpTestBase extends WebTestBase {
    *   The key.
    * @param string $val
    *   The value.
-   *
-   * @return bool
-   *   TRUE if the property is not set, FALSE otherwise.
    */
   protected function assertPropertyNotSet($property, $key, $val) {
     $pattern = $this->getPropertyPattern($property, $key, $val);
-    return $this->assertNoPattern($pattern, 'A ' . $property . ' property was not set for ' . $key . ' = ' . $val);
+    $this->assertSession()
+      ->responseNotMatches($pattern, 'A ' . $property . ' property was not set for ' . $key . ' = ' . $val);
   }
 
   /**

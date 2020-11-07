@@ -1,11 +1,6 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\dfp\Tests\GlobalSettingsTest.
- */
-
-namespace Drupal\dfp\Tests;
+namespace Drupal\Tests\dfp\Functional;
 
 /**
  * Tests DFP global configuration.
